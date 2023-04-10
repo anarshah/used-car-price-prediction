@@ -26,6 +26,7 @@ def get_input():
     return inputs
 
 # Define a function to preprocess the inputs
+# Define a function to preprocess the inputs
 def preprocess_inputs(inputs):
     # Convert categorical variables into numeric form
     inputs['Brand'] = ['Toyota', 'Suzuki', 'Honda', 'Daihatsu', 'Mitsubishi'].index(inputs['Brand'])

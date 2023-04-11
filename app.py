@@ -11,7 +11,7 @@ def get_input():
     # Load the car data from the CSV file
     df_car = pd.read_csv('olx_car_data_csv.csv', encoding='ISO-8859-1')
     
-    df = df.dropna()
+    df = df_car.dropna()
     
     brand_options = df_car['Brand'].unique().tolist()
     brand = st.selectbox('Brand', brand_options)

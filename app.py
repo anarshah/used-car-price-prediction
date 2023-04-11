@@ -9,7 +9,7 @@ model = joblib.load('car_price_prediction_model.joblib')
 # Define a function to get user inputs
 def get_input():
     # Load the car data from the CSV file
-    df_car = pd.read_csv('olx_car_data.csv')
+    df_car = pd.read_csv('olx_car_data_csv.csv')
     
     brand_options = df_car['Brand'].unique().tolist()
     brand = st.selectbox('Brand', brand_options)

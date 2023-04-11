@@ -36,7 +36,7 @@ def get_input():
 
 # Define a function to preprocess the inputs
 def preprocess_inputs(inputs):
-    # Load the dataset
+    # Load the car data from the CSV file
     data = pd.read_csv('olx_car_data_csv.csv', encoding='ISO-8859-1')
 
     # Preprocess the data
@@ -53,15 +53,18 @@ def preprocess_inputs(inputs):
     imputer = SimpleImputer(strategy='median')
     X = imputer.fit_transform(data.drop('Price', axis=1))
     y = data['Price']
-    
-    # Convert user inputs into numeric form
-    inputs['Brand'] = data.loc[data['Brand'] == inputs['Brand'], 'Brand'].index[0]
-    inputs['Model'] = data.loc[data['Model'] == inputs['Model'], 'Model'].index[0]
-    inputs['Condition'] = ['Used', 'New'].index(inputs['Condition'])
-    inputs['Fuel'] = ['Petrol', 'Diesel', 'CNG'].index(inputs['Fuel'])
+
+    # Convert the user inputs into a dataframe
+    df = pd.DataFrame(inputs, index=[0])
+
+    # Convert categorical variables into numeric form
+    df['Brand'] = pd.factorize(data['Brand'])[0][df['Brand'].values][0]
+    df['Condition'] = pd.factorize(data['Condition'])[0][df['Condition'].values][0]
+    df['Fuel'] = pd.factorize(data['Fuel'])[0][df['Fuel'].values][0]
+    df['Model'] = pd.factorize(data['Model'])[0][df['Model'].values][0]
 
     # Return a 2D array of preprocessed inputs
-    return [list(inputs.values())]
+    return [df.values[0]]
 
 
 

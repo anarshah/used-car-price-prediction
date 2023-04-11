@@ -61,7 +61,6 @@ def preprocess_inputs(inputs):
     df_car = data[data['Model'] == inputs['Model']]
     df_car = data[data['Year'] == inputs['Year']]
     df_car = data[data['Fuel'] == inputs['Fuel']]
-    df_car = data[data['Driven_km'] == inputs['Driven_km']]
     brand_index = df_car.index[0]
     df['Brand'][brand_index] = inputs['Brand']
 

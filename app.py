@@ -11,6 +11,8 @@ def get_input():
     # Load the car data from the CSV file
     df_car = pd.read_csv('olx_car_data_csv.csv', encoding='ISO-8859-1')
     
+    df = df.dropna()
+    
     brand_options = df_car['Brand'].unique().tolist()
     brand = st.selectbox('Brand', brand_options)
     
@@ -43,10 +45,33 @@ def preprocess_inputs(inputs):
     df_car = pd.read_csv('olx_car_data_csv.csv', encoding='ISO-8859-1')
     
     # Convert categorical variables into numeric form
-    inputs['Brand'] = df_car[df_car['Brand'] == inputs['Brand']].index[0]
-    inputs['Model'] = df_car[df_car['Model'] == inputs['Model']].index[0]
-    inputs['Condition'] = df_car[df_car['Condition'] == inputs['Condition']].index[0]
-    inputs['Fuel'] = df_car[df_car['Fuel'] == inputs['Fuel']].index[0]
+    matching_brand = df_car[df_car['Brand'] == inputs['Brand']]
+    if not matching_brand.empty:
+        inputs['Brand'] = matching_brand.index[0]
+    else:
+        default_brand = df_car['Brand'].mode()[0]  # Get the most frequent brand in the dataset
+        inputs['Brand'] = df_car[df_car['Brand'] == default_brand].index[0]
+        
+    matching_model = df_car[df_car['Model'] == inputs['Model']]
+    if not matching_model.empty:
+        inputs['Model'] = matching_model.index[0]
+    else:
+        default_model = df_car['Model'].mode()[0]
+        inputs['Model'] = df_car[df_car['Model'] == default_model].index[0]
+        
+    matching_condition = df_car[df_car['Condition'] == inputs['Condition']]
+    if not matching_condition.empty:
+        inputs['Condition'] = matching_condition.index[0]
+    else:
+        default_condition = df_car['Condition'].mode()[0]
+        inputs['Condition'] = df_car[df_car['Condition'] == default_condition].index[0]
+        
+    matching_fuel = df_car[df_car['Fuel'] == inputs['Fuel']]
+    if not matching_fuel.empty:
+        inputs['Fuel'] = matching_fuel.index[0]
+    else:
+        default_fuel = df_car['Fuel'].mode()[0]
+        inputs['Fuel'] = df_car[df_car['Fuel'] == default_fuel].index[0]
     
     # Return a 2D array of preprocessed inputs
     return [list(inputs.values())]

@@ -39,7 +39,7 @@ def preprocess_inputs(inputs):
     df_car = pd.read_csv('olx_car_data_csv.csv', encoding='ISO-8859-1')
     
     # Convert categorical variables into numeric form
-    inputs['Brand'] = pd.factorize(df_car['Brand'])[0][inputs['Brand']]
+    inputs['Brand'] = pd.factorize(df_car['Brand'])[0][brand_options.index(inputs['Brand'])]
     inputs['Model'] = pd.factorize(df_car['Model'])[0][inputs['Model']]
     inputs['Condition'] = pd.factorize(df_car['Condition'])[0][inputs['Condition']]
     inputs['Fuel'] = pd.factorize(df_car['Fuel'])[0][inputs['Fuel']]

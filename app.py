@@ -6,16 +6,15 @@ import pandas as pd
 # Load the trained model
 model = joblib.load('car_price_prediction_model.joblib')
 
-# Load the brand and model options from CSV files
-df_brand = pd.read_csv('brand.csv')
-df_model = pd.read_csv('model.csv')
-
 # Define a function to get user inputs
 def get_input():
-    brand_options = df_brand['Brand'].tolist()
+    # Load the car data from the CSV file
+    df_car = pd.read_csv('olx_car_data.csv')
+    
+    brand_options = df_car['Brand'].unique().tolist()
     brand = st.selectbox('Brand', brand_options)
     
-    model_options = df_model[df_model['Brand'] == brand]['Model'].tolist()
+    model_options = df_car[df_car['Brand'] == brand]['Model'].unique().tolist()
     model = st.selectbox('Model', model_options)
     
     condition = st.selectbox('Condition', ['Used', 'New'])
@@ -36,9 +35,12 @@ def get_input():
 
 # Define a function to preprocess the inputs
 def preprocess_inputs(inputs):
+    # Load the car data from the CSV file
+    df_car = pd.read_csv('olx_car_data.csv')
+    
     # Convert categorical variables into numeric form
-    inputs['Brand'] = df_brand[df_brand['Brand'] == inputs['Brand']].index[0]
-    inputs['Model'] = df_model[df_model['Model'] == inputs['Model']].index[0]
+    inputs['Brand'] = df_car[df_car['Brand'] == inputs['Brand']].index[0]
+    inputs['Model'] = df_car[df_car['Model'] == inputs['Model']].index[0]
     inputs['Condition'] = ['Used', 'New'].index(inputs['Condition'])
     inputs['Fuel'] = ['Petrol', 'Diesel', 'CNG'].index(inputs['Fuel'])
     

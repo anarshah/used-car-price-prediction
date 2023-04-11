@@ -39,14 +39,8 @@ def preprocess_inputs(inputs):
     # Load the dataset
     data = pd.read_csv('olx_car_data_csv.csv', encoding='ISO-8859-1')
 
-    # Preprocess the data
     # Drop unnecessary columns
     data = data.drop(['Registered City', 'Transaction Type'], axis=1)
-
-    # Check if the brand entered by the user is present in the dataset
-    brand_options = data['Brand'].unique()
-    if inputs['Brand'] not in brand_options:
-        raise ValueError(f"The brand '{inputs['Brand']}' is not present in the dataset.")
 
     # Convert categorical variables into numeric form
     data['Brand'] = pd.factorize(data['Brand'])[0]
@@ -58,18 +52,23 @@ def preprocess_inputs(inputs):
     imputer = SimpleImputer(strategy='median')
     X = imputer.fit_transform(data.drop('Price', axis=1))
     y = data['Price']
-    
-    # Create a new DataFrame with the input values
-    X = pd.DataFrame(inputs, index=[0])
-    
-    # Replace the categorical variable values with the factorized values from the car data
-    X['Brand'] = data[data['Brand'] == inputs['Brand']].index[0]
-    X['Model'] = data[data['Model'] == inputs['Model']].index[0]
-    X['Condition'] = data[data['Condition'] == inputs['Condition']].index[0]
-    X['Fuel'] = data[data['Fuel'] == inputs['Fuel']].index[0]
-    
-    # Return the preprocessed input DataFrame
-    return X.values
+
+    # Create a new dataframe with the input values
+    df = pd.DataFrame(X, columns=data.drop('Price', axis=1).columns)
+    df['Brand'] = df['Brand'].astype(int)
+
+    # Update the brand value
+    df_car = data[data['Model'] == inputs['Model']]
+    df_car = df_car[df_car['Year'] == inputs['Year']]
+    df_car = df_car[df_car['Fuel'] == inputs['Fuel']]
+    df_car = df_car[df_car['Transmission'] == inputs['Transmission']]
+    df_car = df_car[df_car['Driven_km'] == inputs['Driven_km']]
+    df_car = df_car[df_car['Condition'] == inputs['Condition']]
+    df_car = df_car[df_car['Location'] == inputs['Location']]
+    brand_index = df_car.index[0]
+    df['Brand'][brand_index] = inputs['Brand']
+
+    return df.values.reshape(1, -1)
 
 # Define the Streamlit app
 def app():

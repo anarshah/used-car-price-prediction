@@ -5,10 +5,10 @@ from sklearn.preprocessing import LabelEncoder
 
 # Load the trained model and encoders
 model = joblib.load('car_price_prediction_model.joblib')
-brand_encoder = joblib.load('brand_encoder.joblib')
-model_encoder = joblib.load('model_encoder.joblib')
-condition_encoder = joblib.load('condition_encoder.joblib')
-fuel_encoder = joblib.load('fuel_encoder.joblib')
+brand_encoder = joblib.load('Brand_encoder.joblib')
+model_encoder = joblib.load('Model_encoder.joblib')
+condition_encoder = joblib.load('Condition_encoder.joblib')
+fuel_encoder = joblib.load('Fuel_encoder.joblib')
 
 def get_input():
     # Load the car data from the CSV file

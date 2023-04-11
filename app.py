@@ -39,34 +39,31 @@ def preprocess_inputs(inputs):
     # Load the car data from the CSV file
     data = pd.read_csv('olx_car_data_csv.csv', encoding='ISO-8859-1')
 
-    # Preprocess the data
     # Drop unnecessary columns
     data = data.drop(['Registered City', 'Transaction Type'], axis=1)
-
+    
     # Convert categorical variables into numeric form
     data['Brand'] = pd.factorize(data['Brand'])[0]
+    data['Model'] = pd.factorize(data['Model'])[0]
     data['Condition'] = pd.factorize(data['Condition'])[0]
     data['Fuel'] = pd.factorize(data['Fuel'])[0]
-    data['Model'] = pd.factorize(data['Model'])[0]
-
+    
+    # Create a new DataFrame with the input data
+    df = pd.DataFrame(columns=data.columns)
+    df = df.append(inputs, ignore_index=True)
+    
+    # Convert the input data to the same format as the training data
+    df['Brand'] = pd.factorize(data['Brand'])[0][df['Brand'].values][0]
+    df['Model'] = pd.factorize(data['Model'])[0][df['Model'].values][0]
+    df['Condition'] = pd.factorize(data['Condition'])[0][df['Condition'].values][0]
+    df['Fuel'] = pd.factorize(data['Fuel'])[0][df['Fuel'].values][0]
+    
     # Impute missing values in the input data
     imputer = SimpleImputer(strategy='median')
-    X = imputer.fit_transform(data.drop('Price', axis=1))
-    y = data['Price']
-
-    # Convert the user inputs into a dataframe
-    df = pd.DataFrame(inputs, index=[0])
-
-    # Convert categorical variables into numeric form
-    df['Brand'] = pd.factorize(data['Brand'])[0][df['Brand']][0]
-    df['Condition'] = pd.factorize(data['Condition'])[0][df['Condition']][0]
-    df['Fuel'] = pd.factorize(data['Fuel'])[0][df['Fuel']][0]
-    df['Model'] = pd.factorize(data['Model'])[0][df['Model']][0]
+    X = imputer.fit_transform(df)
 
     # Return a 2D array of preprocessed inputs
-    return [df.values[0]]
-
-
+    return X
 
 # Define the Streamlit app
 def app():

@@ -59,12 +59,9 @@ def preprocess_inputs(inputs):
 
     # Update the brand value
     df_car = data[data['Model'] == inputs['Model']]
-    df_car = df_car[df_car['Year'] == inputs['Year']]
-    df_car = df_car[df_car['Fuel'] == inputs['Fuel']]
-    df_car = df_car[df_car['Transmission'] == inputs['Transmission']]
-    df_car = df_car[df_car['Driven_km'] == inputs['Driven_km']]
-    df_car = df_car[df_car['Condition'] == inputs['Condition']]
-    df_car = df_car[df_car['Location'] == inputs['Location']]
+    df_car = data[data['Year'] == inputs['Year']]
+    df_car = data[data['Fuel'] == inputs['Fuel']]
+    df_car = data[data['Driven_km'] == inputs['Driven_km']]
     brand_index = df_car.index[0]
     df['Brand'][brand_index] = inputs['Brand']
 

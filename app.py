@@ -36,7 +36,7 @@ def get_input():
 # Define a function to preprocess the inputs
 def preprocess_inputs(inputs):
     # Load the car data from the CSV file
-    df_car = pd.read_csv('olx_car_data.csv')
+    df_car = pd.read_csv('olx_car_data_csv.csv', encoding='ISO-8859-1')
     
     # Convert categorical variables into numeric form
     inputs['Brand'] = df_car[df_car['Brand'] == inputs['Brand']].index[0]

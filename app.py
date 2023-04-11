@@ -1,34 +1,35 @@
-# Import libraries
 import streamlit as st
 import joblib
 import pandas as pd
+from sklearn.preprocessing import LabelEncoder
 
-# Load the trained model
+# Load the trained model and encoders
 model = joblib.load('car_price_prediction_model.joblib')
+brand_encoder = joblib.load('brand_encoder.joblib')
+model_encoder = joblib.load('model_encoder.joblib')
+condition_encoder = joblib.load('condition_encoder.joblib')
+fuel_encoder = joblib.load('fuel_encoder.joblib')
 
-# Define a function to get user inputs
 def get_input():
     # Load the car data from the CSV file
     df_car = pd.read_csv('olx_car_data_csv.csv', encoding='ISO-8859-1')
-    
-    df = df_car.dropna()
-    
+    df_car = df_car.dropna()
+
     brand_options = df_car['Brand'].unique().tolist()
     brand = st.selectbox('Brand', brand_options)
-    
-    model_options = df_car[df_car['Brand'] == brand]['Model'].unique().tolist()
+
+    model_options = df_car[df_car['Brand'] == brand]['Model'].dropna().unique().tolist()
     model = st.selectbox('Model', model_options)
-    
+
     condition_options = df_car['Condition'].unique().tolist()
     condition = st.selectbox('Condition', condition_options)
-    
+
     fuel_options = df_car['Fuel'].unique().tolist()
     fuel = st.selectbox('Fuel', fuel_options)
-    
+
     km_driven = st.slider('KMs Driven', min_value=1, max_value=1000000, step=1000)
     year = st.slider('Year', min_value=1980, max_value=2023, step=1)
-    
-    # Return a dictionary of inputs
+
     inputs = {
         'Brand': brand,
         'Model': model,
@@ -39,62 +40,25 @@ def get_input():
     }
     return inputs
 
-# Define a function to preprocess the inputs
 def preprocess_inputs(inputs):
-    # Load the car data from the CSV file
-    df_car = pd.read_csv('olx_car_data_csv.csv', encoding='ISO-8859-1')
-    
-    # Convert categorical variables into numeric form
-    matching_brand = df_car[df_car['Brand'] == inputs['Brand']]
-    if not matching_brand.empty:
-        inputs['Brand'] = matching_brand.index[0]
-    else:
-        default_brand = df_car['Brand'].mode()[0]  # Get the most frequent brand in the dataset
-        inputs['Brand'] = df_car[df_car['Brand'] == default_brand].index[0]
-        
-    matching_model = df_car[df_car['Model'] == inputs['Model']]
-    if not matching_model.empty:
-        inputs['Model'] = matching_model.index[0]
-    else:
-        default_model = df_car['Model'].mode()[0]
-        inputs['Model'] = df_car[df_car['Model'] == default_model].index[0]
-        
-    matching_condition = df_car[df_car['Condition'] == inputs['Condition']]
-    if not matching_condition.empty:
-        inputs['Condition'] = matching_condition.index[0]
-    else:
-        default_condition = df_car['Condition'].mode()[0]
-        inputs['Condition'] = df_car[df_car['Condition'] == default_condition].index[0]
-        
-    matching_fuel = df_car[df_car['Fuel'] == inputs['Fuel']]
-    if not matching_fuel.empty:
-        inputs['Fuel'] = matching_fuel.index[0]
-    else:
-        default_fuel = df_car['Fuel'].mode()[0]
-        inputs['Fuel'] = df_car[df_car['Fuel'] == default_fuel].index[0]
-    
-    # Return a 2D array of preprocessed inputs
+    inputs['Brand'] = brand_encoder.transform([inputs['Brand']])[0]
+    inputs['Model'] = model_encoder.transform([inputs['Model']])[0]
+    inputs['Condition'] = condition_encoder.transform([inputs['Condition']])[0]
+    inputs['Fuel'] = fuel_encoder.transform([inputs['Fuel']])[0]
+
     return [list(inputs.values())]
 
-# Define the Streamlit app
 def app():
     st.set_page_config(page_title='Car Price Prediction', page_icon=':car:', layout='wide')
     st.title('Car Price Prediction')
     st.write('This app predicts the price of a car based on user inputs')
-    
-    # Get user inputs
+
     inputs = get_input()
-    
-    # Preprocess the inputs
     X = preprocess_inputs(inputs)
-    
-    # Make a prediction using the trained model
     price = model.predict(X)[0]
-    
-    # Display the predicted price to the user
+
     st.subheader('Predicted Price')
     st.write('PKR', int(price))
 
-# Run the app
 if __name__ == '__main__':
     app()

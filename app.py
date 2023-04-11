@@ -37,33 +37,25 @@ def get_input():
 # Define a function to preprocess the inputs
 def preprocess_inputs(inputs):
     # Load the car data from the CSV file
-    data = pd.read_csv('olx_car_data_csv.csv', encoding='ISO-8859-1')
-
-    # Drop unnecessary columns
-    data = data.drop(['Registered City', 'Transaction Type'], axis=1)
+    df_car = pd.read_csv('olx_car_data_csv.csv', encoding='ISO-8859-1')
     
-    # Convert categorical variables into numeric form
-    data['Brand'] = pd.factorize(data['Brand'])[0]
-    data['Model'] = pd.factorize(data['Model'])[0]
-    data['Condition'] = pd.factorize(data['Condition'])[0]
-    data['Fuel'] = pd.factorize(data['Fuel'])[0]
+    # Factorize categorical variables
+    df_car['Brand'] = pd.factorize(df_car['Brand'])[0]
+    df_car['Model'] = pd.factorize(df_car['Model'])[0]
+    df_car['Condition'] = pd.factorize(df_car['Condition'])[0]
+    df_car['Fuel'] = pd.factorize(df_car['Fuel'])[0]
     
-    # Create a new DataFrame with the input data
-    df = pd.DataFrame(columns=data.columns)
-    df = df.append(inputs, ignore_index=True)
+    # Create a new DataFrame with the input values
+    X = pd.DataFrame(inputs, index=[0])
     
-    # Convert the input data to the same format as the training data
-    df['Brand'] = pd.factorize(data['Brand'])[0][df['Brand'].values][0]
-    df['Model'] = pd.factorize(data['Model'])[0][df['Model'].values][0]
-    df['Condition'] = pd.factorize(data['Condition'])[0][df['Condition'].values][0]
-    df['Fuel'] = pd.factorize(data['Fuel'])[0][df['Fuel'].values][0]
+    # Replace the categorical variable values with the factorized values from the car data
+    X['Brand'] = df_car[df_car['Brand'] == X['Brand']]['Brand'].values[0]
+    X['Model'] = df_car[df_car['Model'] == X['Model']]['Model'].values[0]
+    X['Condition'] = df_car[df_car['Condition'] == X['Condition']]['Condition'].values[0]
+    X['Fuel'] = df_car[df_car['Fuel'] == X['Fuel']]['Fuel'].values[0]
     
-    # Impute missing values in the input data
-    imputer = SimpleImputer(strategy='median')
-    X = imputer.fit_transform(df)
-
-    # Return a 2D array of preprocessed inputs
-    return X
+    # Return the preprocessed input DataFrame
+    return X.values
 
 # Define the Streamlit app
 def app():

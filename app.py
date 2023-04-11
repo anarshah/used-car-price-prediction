@@ -2,7 +2,6 @@
 import streamlit as st
 import joblib
 import pandas as pd
-from sklearn.impute import SimpleImputer
 
 # Load the trained model
 model = joblib.load('car_price_prediction_model.joblib')
@@ -36,35 +35,17 @@ def get_input():
 
 # Define a function to preprocess the inputs
 def preprocess_inputs(inputs):
-    # Load the dataset
-    data = pd.read_csv('olx_car_data_csv.csv', encoding='ISO-8859-1')
-
-    # Drop unnecessary columns
-    data = data.drop(['Registered City', 'Transaction Type'], axis=1)
-
+    # Load the car data from the CSV file
+    df_car = pd.read_csv('olx_car_data_csv.csv', encoding='ISO-8859-1')
+    
     # Convert categorical variables into numeric form
-    data['Brand'] = pd.factorize(data['Brand'])[0]
-    data['Condition'] = pd.factorize(data['Condition'])[0]
-    data['Fuel'] = pd.factorize(data['Fuel'])[0]
-    data['Model'] = pd.factorize(data['Model'])[0]
-
-    # Impute missing values in the input data
-    imputer = SimpleImputer(strategy='median')
-    X = imputer.fit_transform(data.drop('Price', axis=1))
-    y = data['Price']
-
-    # Create a new dataframe with the input values
-    df = pd.DataFrame(X, columns=data.drop('Price', axis=1).columns)
-    df['Brand'] = df['Brand'].astype(int)
-
-    # Update the brand value
-    df_car = data[data['Model'] == inputs['Model']]
-    df_car = data[data['Year'] == inputs['Year']]
-    df_car = data[data['Fuel'] == inputs['Fuel']]
-    brand_index = df_car.index[0]
-    df['Brand'][brand_index] = inputs['Brand']
-
-    return df.values.reshape(1, -1)
+    inputs['Brand'] = df_car[df_car['Brand'] == inputs['Brand']].index[0]
+    inputs['Model'] = df_car[df_car['Model'] == inputs['Model']].index[0]
+    inputs['Condition'] = df_car[df_car['Condition'] == inputs['Condition'].index[0]
+    inputs['Fuel'] = df_car[df_car['Fuel'] == inputs['Fuel'].index[0]
+    
+    # Return a 2D array of preprocessed inputs
+    return [list(inputs.values())]
 
 # Define the Streamlit app
 def app():

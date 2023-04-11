@@ -1,38 +1,46 @@
 # Import libraries
 import streamlit as st
 import joblib
+import pandas as pd
 
 # Load the trained model
 model = joblib.load('car_price_prediction_model.joblib')
 
+# Load the brand and model options from CSV files
+df_brand = pd.read_csv('brand.csv')
+df_model = pd.read_csv('model.csv')
+
 # Define a function to get user inputs
 def get_input():
-    brand = st.selectbox('Brand', ['Toyota', 'Suzuki', 'Honda', 'Daihatsu', 'Mitsubishi'])
+    brand_options = df_brand['Brand'].tolist()
+    brand = st.selectbox('Brand', brand_options)
+    
+    model_options = df_model[df_model['Brand'] == brand]['Model'].tolist()
+    model = st.selectbox('Model', model_options)
+    
     condition = st.selectbox('Condition', ['Used', 'New'])
     fuel = st.selectbox('Fuel', ['Petrol', 'Diesel', 'CNG'])
     km_driven = st.slider('KMs Driven', min_value=1, max_value=1000000, step=1000)
-    model = st.text_input('Model')
     year = st.slider('Year', min_value=1980, max_value=2023, step=1)
     
     # Return a dictionary of inputs
     inputs = {
         'Brand': brand,
+        'Model': model,
         'Condition': condition,
         'Fuel': fuel,
         'KMs Driven': km_driven,
-        'Model': model,
         'Year': year
     }
     return inputs
 
 # Define a function to preprocess the inputs
-# Define a function to preprocess the inputs
 def preprocess_inputs(inputs):
     # Convert categorical variables into numeric form
-    inputs['Brand'] = ['Toyota', 'Suzuki', 'Honda', 'Daihatsu', 'Mitsubishi'].index(inputs['Brand'])
+    inputs['Brand'] = df_brand[df_brand['Brand'] == inputs['Brand']].index[0]
+    inputs['Model'] = df_model[df_model['Model'] == inputs['Model']].index[0]
     inputs['Condition'] = ['Used', 'New'].index(inputs['Condition'])
     inputs['Fuel'] = ['Petrol', 'Diesel', 'CNG'].index(inputs['Fuel'])
-    inputs['Model'] = -1 if inputs['Model'] == '' else inputs['Model']
     
     # Return a 2D array of preprocessed inputs
     return [list(inputs.values())]

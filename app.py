@@ -36,14 +36,28 @@ def get_input():
 
 # Define a function to preprocess the inputs
 def preprocess_inputs(inputs):
-    # Load the car data from the CSV file
-    df_car = pd.read_csv('olx_car_data_csv.csv', encoding='ISO-8859-1')
-    
-    # Factorize categorical variables
-    df_car['Brand'] = pd.factorize(df_car['Brand'])[0]
-    df_car['Model'] = pd.factorize(df_car['Model'])[0]
-    df_car['Condition'] = pd.factorize(df_car['Condition'])[0]
-    df_car['Fuel'] = pd.factorize(df_car['Fuel'])[0]
+    # Load the dataset
+    data = pd.read_csv('olx_car_data_csv.csv', encoding='ISO-8859-1')
+
+    # Preprocess the data
+    # Drop unnecessary columns
+    data = data.drop(['Registered City', 'Transaction Type'], axis=1)
+
+    # Check if the brand entered by the user is present in the dataset
+    brand_options = data['Brand'].unique()
+    if inputs['Brand'] not in brand_options:
+        raise ValueError(f"The brand '{inputs['Brand']}' is not present in the dataset.")
+
+    # Convert categorical variables into numeric form
+    data['Brand'] = pd.factorize(data['Brand'])[0]
+    data['Condition'] = pd.factorize(data['Condition'])[0]
+    data['Fuel'] = pd.factorize(data['Fuel'])[0]
+    data['Model'] = pd.factorize(data['Model'])[0]
+
+    # Impute missing values in the input data
+    imputer = SimpleImputer(strategy='median')
+    X = imputer.fit_transform(data.drop('Price', axis=1))
+    y = data['Price']
     
     # Create a new DataFrame with the input values
     X = pd.DataFrame(inputs, index=[0])

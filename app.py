@@ -39,13 +39,20 @@ def preprocess_inputs(inputs):
     df_car = pd.read_csv('olx_car_data_csv.csv', encoding='ISO-8859-1')
 
     # Convert categorical variables into numeric form
-    inputs['Brand'] = pd.factorize(df_car['Brand'])[0][brand_options.index(inputs['Brand'])]
-    inputs['Model'] = pd.factorize(df_car['Model'])[0][df_car[df_car['Brand'] == inputs['Brand']]['Model'].tolist().index(inputs['Model'])]
+    df_car['Brand'] = pd.factorize(df_car['Brand'])[0]
+    df_car['Condition'] = pd.factorize(df_car['Condition'])[0]
+    df_car['Fuel'] = pd.factorize(df_car['Fuel'])[0]
+    df_car['Model'] = pd.factorize(df_car['Model'])[0]
+    
+    # Convert user inputs into numeric form
+    inputs['Brand'] = df_car.loc[df_car['Brand'] == inputs['Brand'], 'Brand'].index[0]
+    inputs['Model'] = df_car.loc[df_car['Model'] == inputs['Model'], 'Model'].index[0]
     inputs['Condition'] = ['Used', 'New'].index(inputs['Condition'])
     inputs['Fuel'] = ['Petrol', 'Diesel', 'CNG'].index(inputs['Fuel'])
 
     # Return a 2D array of preprocessed inputs
     return [list(inputs.values())]
+
 
 
 # Define the Streamlit app

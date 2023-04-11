@@ -17,10 +17,10 @@ def get_input():
     model_options = df_car[df_car['Brand'] == brand]['Model'].unique().tolist()
     model = st.selectbox('Model', model_options)
     
-    condition_options = df_car[df_car['Condition']].unique().tolist()
+    condition_options = df_car['Condition'].unique().tolist()
     condition = st.selectbox('Condition', condition_options)
     
-    fuel_options = df_car[df_car['Fuel']].unique().tolist()
+    fuel_options = df_car['Fuel'].unique().tolist()
     fuel = st.selectbox('Fuel', fuel_options)
     
     km_driven = st.slider('KMs Driven', min_value=1, max_value=1000000, step=1000)
@@ -45,8 +45,8 @@ def preprocess_inputs(inputs):
     # Convert categorical variables into numeric form
     inputs['Brand'] = df_car[df_car['Brand'] == inputs['Brand']].index[0]
     inputs['Model'] = df_car[df_car['Model'] == inputs['Model']].index[0]
-    inputs['Condition'] = df_car[df_car['Condition'] == inputs['Condition'].index[0]
-    inputs['Fuel'] = df_car[df_car['Fuel'] == inputs['Fuel'].index[0]
+    inputs['Condition'] = df_car[df_car['Condition'] == inputs['Condition']].index[0]
+    inputs['Fuel'] = df_car[df_car['Fuel'] == inputs['Fuel']].index[0]
     
     # Return a 2D array of preprocessed inputs
     return [list(inputs.values())]

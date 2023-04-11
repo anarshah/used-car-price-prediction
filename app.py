@@ -17,8 +17,12 @@ def get_input():
     model_options = df_car[df_car['Brand'] == brand]['Model'].unique().tolist()
     model = st.selectbox('Model', model_options)
     
-    condition = st.selectbox('Condition', ['Used', 'New'])
-    fuel = st.selectbox('Fuel', ['Petrol', 'Diesel', 'CNG'])
+    condition_options = df_car[df_car['Condition']].unique().tolist()
+    condition = st.selectbox('Condition', condition_options)
+    
+    fuel_options = df_car[df_car['Fuel']].unique().tolist()
+    fuel = st.selectbox('Fuel', fuel_options)
+    
     km_driven = st.slider('KMs Driven', min_value=1, max_value=1000000, step=1000)
     year = st.slider('Year', min_value=1980, max_value=2023, step=1)
     

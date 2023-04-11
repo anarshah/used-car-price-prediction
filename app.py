@@ -55,8 +55,8 @@ def preprocess_inputs(inputs):
     y = data['Price']
     
     # Convert user inputs into numeric form
-    inputs['Brand'] = df_car.loc[df_car['Brand'] == inputs['Brand'], 'Brand'].index[0]
-    inputs['Model'] = df_car.loc[df_car['Model'] == inputs['Model'], 'Model'].index[0]
+    inputs['Brand'] = data.loc[data['Brand'] == inputs['Brand'], 'Brand'].index[0]
+    inputs['Model'] = data.loc[data['Model'] == inputs['Model'], 'Model'].index[0]
     inputs['Condition'] = ['Used', 'New'].index(inputs['Condition'])
     inputs['Fuel'] = ['Petrol', 'Diesel', 'CNG'].index(inputs['Fuel'])
 

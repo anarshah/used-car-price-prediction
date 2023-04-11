@@ -49,10 +49,10 @@ def preprocess_inputs(inputs):
     X = pd.DataFrame(inputs, index=[0])
     
     # Replace the categorical variable values with the factorized values from the car data
-    X['Brand'] = df_car[df_car['Brand'] == X['Brand']]['Brand'].values[0]
-    X['Model'] = df_car[df_car['Model'] == X['Model']]['Model'].values[0]
-    X['Condition'] = df_car[df_car['Condition'] == X['Condition']]['Condition'].values[0]
-    X['Fuel'] = df_car[df_car['Fuel'] == X['Fuel']]['Fuel'].values[0]
+    X['Brand'] = df_car[df_car['Brand'] == inputs['Brand']].index[0]
+    X['Model'] = df_car[df_car['Model'] == inputs['Model']].index[0]
+    X['Condition'] = df_car[df_car['Condition'] == inputs['Condition']].index[0]
+    X['Fuel'] = df_car[df_car['Fuel'] == inputs['Fuel']].index[0]
     
     # Return the preprocessed input DataFrame
     return X.values

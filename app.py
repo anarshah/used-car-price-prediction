@@ -2,6 +2,7 @@
 import streamlit as st
 import joblib
 import pandas as pd
+from sklearn.impute import SimpleImputer
 
 # Load the trained model
 model = joblib.load('car_price_prediction_model.joblib')

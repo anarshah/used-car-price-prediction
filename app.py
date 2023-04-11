@@ -58,10 +58,10 @@ def preprocess_inputs(inputs):
     df = pd.DataFrame(inputs, index=[0])
 
     # Convert categorical variables into numeric form
-    df['Brand'] = pd.factorize(data['Brand'])[0][df['Brand'].values][0]
-    df['Condition'] = pd.factorize(data['Condition'])[0][df['Condition'].values][0]
-    df['Fuel'] = pd.factorize(data['Fuel'])[0][df['Fuel'].values][0]
-    df['Model'] = pd.factorize(data['Model'])[0][df['Model'].values][0]
+    df['Brand'] = pd.factorize(data['Brand'])[0][df['Brand']][0]
+    df['Condition'] = pd.factorize(data['Condition'])[0][df['Condition']][0]
+    df['Fuel'] = pd.factorize(data['Fuel'])[0][df['Fuel']][0]
+    df['Model'] = pd.factorize(data['Model'])[0][df['Model']][0]
 
     # Return a 2D array of preprocessed inputs
     return [df.values[0]]
